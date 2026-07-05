@@ -28,6 +28,11 @@ NORMAL_LIMIT = 15
 # ==========================
 # زمان‌بندی
 # ==========================
+REQUEST_TIMEOUT = 15
+
+USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/137.0 Safari/537.36"
+
+MAX_RETRY = 3
 
 REPORT_HOUR = 12
 REPORT_MINUTE = 0
