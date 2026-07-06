@@ -1,0 +1,33 @@
+{
+  "NQRABI": {
+    "name": "صندوق س. کالای کهکشان فیروزه 1",
+    "symbol": "NQRABI",
+    "tsetmc_code": "46348573956418657",
+    "type": "commodity_fund",
+    "active": true
+  },
+
+  "SYNERGY": {
+    "name": "ص.س. مبتنی بر کالای فارابی (سینرژی)",
+    "symbol": "SYNERGY",
+    "tsetmc_code": null,
+    "type": "commodity_etf",
+    "active": true
+  },
+
+  "NAHAL": {
+    "name": "صندوق س. کالای نوویرا (نهال)",
+    "symbol": "NAHAL",
+    "tsetmc_code": null,
+    "type": "commodity_fund",
+    "active": true
+  },
+
+  "AYAR": {
+    "name": "صندوق طلای عیار مفید (عیار)",
+    "symbol": "AYAR",
+    "tsetmc_code": null,
+    "type": "gold_commodity_fund",
+    "active": true
+  }
+}
