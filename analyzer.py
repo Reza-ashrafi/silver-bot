@@ -1,5 +1,4 @@
 import requests
-from bs4 import BeautifulSoup
 
 def get_silver_price():
     try:
@@ -7,14 +6,16 @@ def get_silver_price():
         r = requests.get(url, timeout=10)
         r.raise_for_status()
 
-        soup = BeautifulSoup(r.text, "html.parser")
+        text = r.text
 
-        price_tag = soup.find("span", {"data-col": "info.last"})
-        if not price_tag:
+        # خیلی ساده و مقاوم (بدون BeautifulSoup حساس)
+        import re
+        match = re.search(r'data-col="info.last".*?>([\d,]+)</span>', text)
+
+        if not match:
             return None
 
-        price_text = price_tag.text.replace(",", "").strip()
-        return float(price_text)
+        return float(match.group(1).replace(",", ""))
 
     except Exception as e:
         print("SILVER ERROR:", e)
@@ -32,9 +33,28 @@ def analyze():
             "market": 0,
             "bubble": 0,
             "score": 0,
-            "decision": "❌ دیتا در دسترس نیست (خطا در دریافت قیمت)"
+            "decision": "❌ خطا در دریافت قیمت نقره (سایت در دسترس نیست)"
         }
 
+    usd = 60000
+
+    intrinsic = silver * usd
+    market = intrinsic * 1.03
+
+    bubble = ((market - intrinsic) / intrinsic) * 100 if intrinsic else 0
+    score = max(0, 100 - abs(bubble) * 10)
+
+    decision = "📈 مناسب بررسی" if bubble < 5 else "⚠️ حباب بالا"
+
+    return {
+        "silver": silver,
+        "usd": usd,
+        "intrinsic": intrinsic,
+        "market": market,
+        "bubble": bubble,
+        "score": score,
+        "decision": decision
+    }
     usd = 60000  # فعلاً ثابت برای جلوگیری از خطا
 
     intrinsic = silver * usd
