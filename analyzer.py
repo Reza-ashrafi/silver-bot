@@ -1,40 +1,14 @@
 def analyze():
-    # دیتا موقت برای اینکه ربات نخوابه
-    silver = 28.5
-    usd = 60000
-
-    intrinsic = silver * usd
-    market = intrinsic * 1.02
-
-    bubble = ((market - intrinsic) / intrinsic) * 100
-
-    score = max(0, 100 - abs(bubble) * 10)
-
-    decision = "📈 فعلاً پایدار - تستی"
-
+    print("ANALYZE CALLED")
     return {
-        "silver": silver,
-        "usd": usd,
-        "intrinsic": intrinsic,
-        "market": market,
-        "bubble": bubble,
-        "score": score,
-        "decision": decision
-    }        "usd": usd,
-        "intrinsic": intrinsic,
-        "market": market,
-        "bubble": bubble,
-        "score": score,
-        "decision": decision
-    }
-    usd = 60000  # فعلاً ثابت برای جلوگیری از خطا
-
-    intrinsic = silver * usd
-    market = intrinsic * 1.05  # شبیه‌سازی ساده
-
-    bubble = ((market - intrinsic) / intrinsic) * 100
-
-    score = max(0, 100 - abs(bubble) * 10)
+        "silver": 28.5,
+        "usd": 60000,
+        "intrinsic": 0,
+        "market": 0,
+        "bubble": 0,
+        "score": 0,
+        "decision": "TEST MODE - NO API"
+    }    score = max(0, 100 - abs(bubble) * 10)
 
     decision = "📈 مناسب بررسی خرید" if bubble < 5 else "⚠️ حباب بالا"
 
