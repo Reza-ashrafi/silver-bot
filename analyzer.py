@@ -1,41 +1,60 @@
-from config import MARKET_PREMIUM, BUY_LIMIT, NORMAL_LIMIT
-from sources import get_silver_spot, get_market_price
+import requests
+from bs4 import BeautifulSoup
 
-
-OZ_TO_GRAM = 31.1035
-
-
-# =========================
-# ارزش ذاتی نقره (1kg)
-# =========================
-def intrinsic_value(spot_price, usd_rate):
-    return (1000 / OZ_TO_GRAM) * spot_price * usd_rate
-
-
-# =========================
-# تحلیل کامل بازار
-# =========================
-def analyze():
-
-    silver = get_silver_spot()
-    market = get_market_price()
-
-    # نرخ دلار ساده (فعلاً از TGJU جدا نکردیم برای پایداری)
-    # اگر خواستی بعداً جداش می‌کنیم
-    import requests
+def get_silver_price():
     try:
-        usd_data = requests.get(
-            "https://api.exchangerate.host/latest?base=USD&symbols=IRR"
-        ).json()
-        usd = usd_data["rates"]["IRR"] / 10
-    except:
-        usd = 60000  # fallback
+        url = "https://www.tgju.org/profile/silver_999"
+        r = requests.get(url, timeout=10)
+        r.raise_for_status()
 
-    if not silver or not market:
+        soup = BeautifulSoup(r.text, "html.parser")
+
+        price_tag = soup.find("span", {"data-col": "info.last"})
+        if not price_tag:
+            return None
+
+        price_text = price_tag.text.replace(",", "").strip()
+        return float(price_text)
+
+    except Exception as e:
+        print("SILVER ERROR:", e)
+        return None
+
+
+def analyze():
+    silver = get_silver_price()
+
+    if not silver:
         return {
-            "error": "data_not_available"
+            "silver": 0,
+            "usd": 0,
+            "intrinsic": 0,
+            "market": 0,
+            "bubble": 0,
+            "score": 0,
+            "decision": "❌ دیتا در دسترس نیست (خطا در دریافت قیمت)"
         }
 
+    usd = 60000  # فعلاً ثابت برای جلوگیری از خطا
+
+    intrinsic = silver * usd
+    market = intrinsic * 1.05  # شبیه‌سازی ساده
+
+    bubble = ((market - intrinsic) / intrinsic) * 100
+
+    score = max(0, 100 - abs(bubble) * 10)
+
+    decision = "📈 مناسب بررسی خرید" if bubble < 5 else "⚠️ حباب بالا"
+
+    return {
+        "silver": silver,
+        "usd": usd,
+        "intrinsic": intrinsic,
+        "market": market,
+        "bubble": bubble,
+        "score": score,
+        "decision": decision
+    }
     intrinsic = intrinsic_value(silver, usd)
 
     # =========================
